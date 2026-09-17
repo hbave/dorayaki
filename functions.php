@@ -262,7 +262,7 @@ function dorayaki_scripts() {
 
 
 	// Adds JavaScript for scalable videos
-	wp_enqueue_script( 'fitvids', get_template_directory_uri() . '/assets/js/jquery.fitvids.js', array( 'jquery' ), '1.0' );
+	wp_enqueue_script( 'fitvids', get_template_directory_uri() . '/assets/js/jquery.fitvids.js', array( 'jquery' ), '1.0', true );
 
 	// Adds Custom Dorayaki JavaScript for Off Canvas layout
 	wp_enqueue_script( 'dorayaki-custom', get_template_directory_uri() . '/assets/js/custom.js', array( 'jquery' ), '1.0' );
