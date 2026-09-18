@@ -1379,22 +1379,40 @@ class dorayaki_contactbox extends WP_Widget {
 	public function widget($args, $instance) {
 		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 'cbaddress' => '', 'cbinfo' => '', 'cbemailtitle01' => '', 'cbemail01' => '', 'cbemailtitle02' => '', 'cbemail02' => '', 'cbemailtitle03' => '', 'cbemail03' => '', 'cbmapurl' => '' ) );
 		extract( $args );
-		$cbaddress = $instance['cbaddress'];
-		$cbinfo = $instance['cbinfo'];
-		$cbemailtitle01 = $instance['cbemailtitle01'];
-		$cbemail01 = $instance['cbemail01'];
-		$cbemailtitle02 = $instance['cbemailtitle02'];
-		$cbemail02 = $instance['cbemail02'];
-		$cbemailtitle03 = $instance['cbemailtitle03'];
-		$cbemail03 = $instance['cbemail03'];
-		$cbmapurl = $instance['cbmapurl'];
+		$cbaddress = !empty($instance['cbaddress']) ? $instance['cbaddress'] : '';
+		$cbinfo = !empty($instance['cbinfo']) ? $instance['cbinfo'] : '';
+		$cbemailtitle01 = !empty($instance['cbemailtitle01']) ? $instance['cbemailtitle01'] : '';
+		$cbemail01 = !empty($instance['cbemail01']) ? $instance['cbemail01'] : '';
+		$cbemailtitle02 = !empty($instance['cbemailtitle02']) ? $instance['cbemailtitle02'] : '';
+		$cbemail02 = !empty($instance['cbemail02']) ? $instance['cbemail02'] : '';
+		$cbemailtitle03 = !empty($instance['cbemailtitle03']) ? $instance['cbemailtitle03'] : '';
+		$cbemail03 = !empty($instance['cbemail03']) ? $instance['cbemail03'] : '';
+		$cbmapurl = !empty($instance['cbmapurl']) ? $instance['cbmapurl'] : '';
+		$widget_id = $this->id;
 
 		echo $before_widget; ?>
 
 			<div class="contact-box clearfix">
 				<div class="cb-map">
 					<?php if($cbmapurl != ''){
-						echo '<iframe src="'.$cbmapurl.'&amp;output=embed" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>';
+			            $is_osm = (strpos($cbmapurl, 'openstreetmap.org') !== false);
+						$provider_name = $is_osm ? 'OpenStreetMap' : 'Google Maps';
+						?>
+						<div class="map-2click-container" id="map-container-<?php echo esc_attr($widget_id); ?>">
+							<div class="map-placeholder">
+								<div class="map-placeholder-content">
+									<p class="map-privacy-text">
+										<strong><?php printf( __( 'Load %s?', 'dorayaki' ), $provider_name ); ?></strong><br>
+										<?php printf( __( 'By loading the map, you accept the privacy policy of %s.', 'dorayaki' ), $provider_name ); ?>
+									</p>
+									<button class="map-load-btn" data-container-id="map-container-<?php echo esc_attr($widget_id); ?>"><?php _e('Activate Map', 'dorayaki'); ?></button>
+								</div>
+							</div>
+						    <template class="map-template">
+								<iframe title="<?php echo esc_attr( sprintf( __( 'Interactive Map of %s', 'dorayaki' ), $provider_name ) ); ?>" src="<?php echo esc_url($cbmapurl); ?>" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+							</template>
+						</div>
+					<?php
 					} ?>
 				</div><!-- end .cb-map -->
 				<div class="cb-info clearfix">
@@ -1404,19 +1422,24 @@ class dorayaki_contactbox extends WP_Widget {
 							echo '<div class="cb-additional">'.$cbinfo.'</div>';
 						} ?>
 						<?php if($cbmapurl != ''){
-							echo '<a href="'.$cbmapurl.'" class="cb-maplink" target="_blank">'. __( 'View map in browser', 'dorayaki').'</a>';
+							echo '<a href="'.esc_url($cbmapurl)'" class="cb-maplink" target="_blank">'. __( 'View map in browser', 'dorayaki').'</a>';
 						} ?>
 					</div><!-- end .cb-address-wrap -->
 					<div class="cb-emails">
 						<h5><?php _e('Email Us', 'dorayaki') ?></h5>
-						<h6><?php echo ($cbemailtitle01); ?></h6>
-						<span><?php echo ($cbemail01); ?></span>
-						<?php if($cbemailtitle02 != '' || $cbemail02 != ''){
-							echo '<h6>'.$cbemailtitle02.'</h6><span>'.$cbemail02.'</span>';
-						} ?>
-						<?php if($cbemailtitle03 != '' || $cbemail03 != ''){
-							echo '<h6>'.$cbemailtitle03.'</h6><span>'.$cbemail03.'</span>';
-						} ?>
+						<?php if(!empty($cbemailtitle01) || !empty($cbemail01)): ?>
+		                    <h6><?php echo esc_html($cbemailtitle01); ?></h6>
+						    <span><?php echo esc_html($cbemail01); ?></span>
+			            <?php endif; ?>
+		                <?php if(!empty($cbemailtitle02) || !empty($cbemail02)): ?>
+		                    <h6><?php echo esc_html($cbemailtitle02); ?></h6>
+						    <span><?php echo esc_html($cbemail02); ?></span>
+			            <?php endif; ?>
+		                <?php if(!empty($cbemailtitle03) || !empty($cbemail03)): ?>
+		                    <h6><?php echo esc_html($cbemailtitle03); ?></h6>
+						    <span><?php echo esc_html($cbemail03); ?></span>
+			            <?php endif; ?>
+		
 					</div><!-- end .cb-emails -->
 				</div><!-- end .cb-info -->
 			</div><!-- end .contact-box -->
@@ -1428,11 +1451,11 @@ class dorayaki_contactbox extends WP_Widget {
 		 wp_reset_postdata();
 	 }
 
-	 function update($new_instance, $old_instance) {
+	 public function update($new_instance, $old_instance) {
 			 return $new_instance;
 	 }
 
-	 function form($instance) {
+	 public function form($instance) {
 		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 'cbaddress' => '', 'cbinfo' => '', 'cbemailtitle01' => '', 'cbemail01' => '', 'cbemailtitle02' => '', 'cbemail02' => '', 'cbemailtitle03' => '', 'cbemail03' => '', 'cbmapurl' => '' ) );
 		$cbaddress = esc_attr($instance['cbaddress']);
 		$cbinfo = esc_attr($instance['cbinfo']);
@@ -1487,8 +1510,8 @@ class dorayaki_contactbox extends WP_Widget {
 				</p>
 
 				<p>
-					<label for="<?php echo $this->get_field_id('cbmapurl'); ?>"><?php _e('Google Maps URL (no short URL, please):','dorayaki'); ?></label>
-			<textarea name="<?php echo $this->get_field_name('cbmapurl'); ?>" class="widefat" rows="8" id="<?php echo $this->get_field_id('cbmapurl'); ?>"><?php echo($cbmapurl); ?></textarea>
+					<label for="<?php echo $this->get_field_id('cbmapurl'); ?>"><?php _e('Google Maps / OpenStreetMap URL (no short URL, please):','dorayaki'); ?></label>
+			<textarea name="<?php echo $this->get_field_name('cbmapurl'); ?>" class="widefat" rows="6" id="<?php echo $this->get_field_id('cbmapurl'); ?>"><?php echo($cbmapurl); ?></textarea>
 				</p>
 
 		<?php
