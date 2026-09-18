@@ -875,7 +875,7 @@ class dorayaki_team extends WP_Widget {
 					<div class="tm-author">
 						<h4><?php echo esc_html($teamname); ?></h4>
 						<span class="tm-pos"><?php echo esc_html($teamposition); ?></span>
-							<p class="tm-text"><?php echo esc_html($teamtext); ?></p>
+							<?php echo wpautop( wp_kses_post( $teamtext ) ); ?>
 							<?php if($teamlinkurl != ''){
 			                    // Fallback no custom aria-label is entered
 			                    $aria1 = !empty($teamlink_aria) ? $teamlink_aria : sprintf( __( '%1$s %2$s', 'dorayaki' ), $teamname, $teamlink );
@@ -889,7 +889,7 @@ class dorayaki_team extends WP_Widget {
 					</div>
 				</div><!-- end .tm-info -->
 				<div class="tm-quote">
-					<p><?php echo esc_html($teamquote); ?></p>
+					 <?php echo wpautop( wp_kses_post( $teamquote ) ); ?>
 				</div><!-- end .tm-quote -->
 			</div><!-- end .team-box -->
 
