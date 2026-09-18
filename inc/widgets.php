@@ -1422,7 +1422,7 @@ class dorayaki_contactbox extends WP_Widget {
 							echo '<div class="cb-additional">'.$cbinfo.'</div>';
 						} ?>
 						<?php if($cbmapurl != ''){
-							echo '<a href="'.esc_url($cbmapurl)'" class="cb-maplink" target="_blank">'. __( 'View map in browser', 'dorayaki').'</a>';
+							echo '<a href="'.esc_url($cbmapurl).'" class="cb-maplink" target="_blank">'. __( 'View map in browser', 'dorayaki').'</a>';
 						} ?>
 					</div><!-- end .cb-address-wrap -->
 					<div class="cb-emails">
