@@ -852,8 +852,20 @@ class dorayaki_team extends WP_Widget {
 	}
 
 	public function widget($args, $instance) {
-		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 'teamname' => '', 'teamimg' => '', 'teamposition' => '', 'teamtext' => '', 'teamquote' => '', 'teamlink' => '', 'teamlinkurl' => '', 'teamlink2' => '', 'teamlinkurl2' => '' ) );
-		extract( $args );
+		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 
+			'teamname' => '', 
+			'teamimg' => '', 
+			'teamposition' => '', 
+			'teamtext' => '', 
+			'teamquote' => '', 
+			'teamlink' => '', 
+			'teamlinkurl' => '', 
+			'teamlink_aria' => '', 
+			'teamlink2' => '', 
+			'teamlinkurl2' => '', 
+			'teamlink_aria2' => '' 
+		) );
+		
 		$teamname = $instance['teamname'];
 		$teamimg = $instance['teamimg'];
 		$teamposition = $instance['teamposition'];
@@ -861,101 +873,144 @@ class dorayaki_team extends WP_Widget {
 		$teamquote = $instance['teamquote'];
 		$teamlink = $instance['teamlink'];
 		$teamlinkurl = $instance['teamlinkurl'];
+		$teamlink_aria = $instance['teamlink_aria'];
 		$teamlink2 = $instance['teamlink2'];
 		$teamlinkurl2 = $instance['teamlinkurl2'];
+		$teamlink_aria2 = $instance['teamlink_aria2'];
 
+		$allowed_protocols = array( 'http', 'https', 'mailto', 'tel' );
 
-		echo $before_widget; ?>
+		echo $args['before_widget']; ?>
 
 			<div class="team-box">
 				<div class="tm-info">
-					<img src="<?php echo $teamimg; ?>" alt="<?php echo $teamname; ?>" class="tm-img">
+					<img src="<?php echo esc_url($teamimg); ?>" alt="<?php echo esc_attr($teamname); ?>" class="tm-img">
 					<div class="tm-author">
-						<h4><?php echo $teamname; ?></h4>
-						<span class="tm-pos"><?php echo $teamposition; ?></span>
-							<p class="tm-text"><?php echo $teamtext; ?></p>
+						<h4><?php echo esc_html($teamname); ?></h4>
+						<span class="tm-pos"><?php echo esc_html($teamposition); ?></span>
+							<?php echo wpautop(wp_kses_post($teamtext)); ?>
 							<?php if($teamlinkurl != ''){
-								echo '<a href="'.$teamlinkurl.'" class="tm-link">'.$teamlink.'</a>';
+			                    $aria1 = !empty($teamlink_aria) ? $teamlink_aria : sprintf( __( '%1$s %2$s', 'dorayaki' ), $teamname, $teamlink );
+								echo '<a href="'.esc_url($teamlinkurl, $allowed_protocols).'" class="tm-link" aria-label="'.esc_attr($aria1).'">'.esc_html($teamlink).'</a>';
 							} ?>
 							<?php if($teamlinkurl2 != ''){
-								echo '<a href="'.$teamlinkurl2.'" class="tm-link">'.$teamlink2.'</a>';
+			                    $aria2 = !empty($teamlink_aria2) ? $teamlink_aria2 : sprintf( __( '%1$s %2$s', 'dorayaki' ), $teamname, $teamlink2 );
+								echo '<a href="'.esc_url($teamlinkurl2, $allowed_protocols).'" class="tm-link" aria-label="'.esc_attr($aria2).'">'.esc_html($teamlink2).'</a>';
 							} ?>
 					</div>
 				</div><!-- end .tm-info -->
 				<div class="tm-quote">
-					<p><?php echo $teamquote; ?></p>
+					<?php 
+					if ( $teamquote != '' ) {
+						echo wpautop(wp_kses_post($teamquote)); 
+					} else {
+						echo '<p>&nbsp;</p>'; 
+					}
+					?>
 				</div><!-- end .tm-quote -->
 			</div><!-- end .team-box -->
 
 		 <?php
-		 echo $after_widget;
+		 echo $args['after_widget'];
 
-		 // Reset the post globals as this query will have stomped on it
-		 wp_reset_postdata();
 	 }
 
-	 function update($new_instance, $old_instance) {
-			 return $new_instance;
+	 public function update($new_instance, $old_instance) {
+		$instance = $old_instance;
+		$allowed_protocols = array( 'http', 'https', 'mailto', 'tel' );
+		$instance['teamname']       = sanitize_text_field($new_instance['teamname']);
+		$instance['teamimg']        = esc_url_raw($new_instance['teamimg']);
+		$instance['teamposition']   = sanitize_text_field($new_instance['teamposition']);
+		$instance['teamtext']       = sanitize_textarea_field($new_instance['teamtext']);
+		$instance['teamquote']      = sanitize_textarea_field($new_instance['teamquote']);
+		$instance['teamlink']       = sanitize_text_field($new_instance['teamlink']);
+		$instance['teamlinkurl']    = esc_url_raw($new_instance['teamlinkurl'], $allowed_protocols);
+		$instance['teamlink_aria']  = sanitize_text_field($new_instance['teamlink_aria']);
+		$instance['teamlink2']      = sanitize_text_field($new_instance['teamlink2']);
+		$instance['teamlinkurl2']   = esc_url_raw($new_instance['teamlinkurl2'], $allowed_protocols);
+		$instance['teamlink_aria2'] = sanitize_text_field($new_instance['teamlink_aria2']);
+		return $instance;
 	 }
 
-	 function form($instance) {
-		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 'teamname' => '', 'teamimg' => '', 'teamposition' => '', 'teamtext' => '', 'teamquote' => '', 'teamlink' => '', 'teamlinkurl' => '', 'teamlink2' => '', 'teamlinkurl2' => '' ) );
-		$teamname = esc_attr($instance['teamname']);
-		$teamimg = esc_attr($instance['teamimg']);
-		$teamposition = esc_attr($instance['teamposition']);
-		$teamtext = esc_attr($instance['teamtext']);
-		$teamquote = esc_attr($instance['teamquote']);
-		$teamlink = esc_attr($instance['teamlink']);
-		$teamlinkurl = esc_attr($instance['teamlinkurl']);
-		$teamlink2 = esc_attr($instance['teamlink2']);
-		$teamlinkurl2 = esc_attr($instance['teamlinkurl2']);
-
+	 public function form($instance) {
+		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 
+			'teamname' => '', 
+			'teamimg' => '', 
+			'teamposition' => '', 
+			'teamtext' => '', 
+			'teamquote' => '', 
+			'teamlink' => '', 
+			'teamlinkurl' => '',
+			'teamlink_aria' => '',
+			'teamlink2' => '', 
+			'teamlinkurl2' => '',
+			'teamlink_aria2' => ''
+		) );
+		$teamname = $instance['teamname'];
+		$teamimg = $instance['teamimg'];
+		$teamposition = $instance['teamposition'];
+		$teamtext = $instance['teamtext'];
+		$teamquote = $instance['teamquote'];
+		$teamlink = $instance['teamlink'];
+		$teamlinkurl = $instance['teamlinkurl'];
+		$teamlink_aria  = $instance['teamlink_aria'];
+		$teamlink2 = $instance['teamlink2'];
+		$teamlinkurl2 = $instance['teamlinkurl2'];
+		$teamlink_aria2  = $instance['teamlink_aria2']; 
 
 		?>
 
 		<p>
 						<label for="<?php echo $this->get_field_id('teamname'); ?>"><?php _e('Team Member Name:','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('teamname'); ?>" value="<?php echo $teamname; ?>" class="widefat" id="<?php echo $this->get_field_id('teamname'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('teamname'); ?>" value="<?php echo esc_attr($teamname); ?>" class="widefat" id="<?php echo $this->get_field_id('teamname'); ?>" />
 				</p>
 
 				<p>
 						<label for="<?php echo $this->get_field_id('teamimg'); ?>"><?php _e('Image URL (240x240px):','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('teamimg'); ?>" value="<?php echo $teamimg; ?>" class="widefat" id="<?php echo $this->get_field_id('teamimg'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('teamimg'); ?>" value="<?php echo esc_url($teamimg); ?>" class="widefat" id="<?php echo $this->get_field_id('teamimg'); ?>" />
 				</p>
 
 				<p>
 						<label for="<?php echo $this->get_field_id('teamposition'); ?>"><?php _e('Company Position:','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('teamposition'); ?>" value="<?php echo $teamposition; ?>" class="widefat" id="<?php echo $this->get_field_id('teamposition'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('teamposition'); ?>" value="<?php echo esc_attr($teamposition); ?>" class="widefat" id="<?php echo $this->get_field_id('teamposition'); ?>" />
 				</p>
 
 				<p>
 					<label for="<?php echo $this->get_field_id('teamtext'); ?>"><?php _e('About Text:','dorayaki'); ?></label>
-			<textarea name="<?php echo $this->get_field_name('teamtext'); ?>" class="widefat" rows="8" id="<?php echo $this->get_field_id('teamtext'); ?>"><?php echo( $teamtext ); ?></textarea>
+			<textarea name="<?php echo $this->get_field_name('teamtext'); ?>" class="widefat" rows="8" id="<?php echo $this->get_field_id('teamtext'); ?>"><?php echo esc_textarea($teamtext); ?></textarea>
 				</p>
 
 				 <p>
 					<label for="<?php echo $this->get_field_id('teamquote'); ?>"><?php _e('Personal Quote:','dorayaki'); ?></label>
-			<textarea name="<?php echo $this->get_field_name('teamquote'); ?>" class="widefat" rows="4" id="<?php echo $this->get_field_id('teamquote'); ?>"><?php echo( $teamquote ); ?></textarea>
+			<textarea name="<?php echo $this->get_field_name('teamquote'); ?>" class="widefat" rows="4" id="<?php echo $this->get_field_id('teamquote'); ?>"><?php echo esc_textarea($teamquote); ?></textarea>
 				</p>
-
+					 <hr/>
 				<p>
 						<label for="<?php echo $this->get_field_id('teamlink'); ?>"><?php _e('1. Link (Text):','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('teamlink'); ?>" value="<?php echo $teamlink; ?>" class="widefat" id="<?php echo $this->get_field_id('teamlink'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('teamlink'); ?>" value="<?php echo esc_attr($teamlink); ?>" class="widefat" id="<?php echo $this->get_field_id('teamlink'); ?>" />
 				</p>
 
 				 <p>
 						<label for="<?php echo $this->get_field_id('teamlinkurl'); ?>"><?php _e('1. Link (URL):','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('teamlinkurl'); ?>" value="<?php echo $teamlinkurl; ?>" class="widefat" id="<?php echo $this->get_field_id('teamlinkurl'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('teamlinkurl'); ?>" value="<?php echo esc_url($teamlinkurl); ?>" class="widefat" id="<?php echo $this->get_field_id('teamlinkurl'); ?>" placeholder="https://..., mailto:... oder tel:..." />
+				</p>
+		         <p>
+					    <label for="<?php echo $this->get_field_id('teamlink_aria'); ?>"><?php _e('1. Link (Aria-Label):','dorayaki'); ?></label>
+					    <input type="text" name="<?php echo $this->get_field_name('teamlink_aria'); ?>" value="<?php echo esc_attr($teamlink_aria); ?>" class="widefat" id="<?php echo $this->get_field_id('teamlink_aria'); ?>" placeholder="e.g. LinkedIn Profile of John Doe" />
 				</p>
 
 				 <p>
 						<label for="<?php echo $this->get_field_id('teamlink2'); ?>"><?php _e('2.Link (Text):','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('teamlink2'); ?>" value="<?php echo $teamlink2; ?>" class="widefat" id="<?php echo $this->get_field_id('teamlink2'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('teamlink2'); ?>" value="<?php echo esc_attr($teamlink2); ?>" class="widefat" id="<?php echo $this->get_field_id('teamlink2'); ?>" />
 				</p>
 
 				 <p>
 						<label for="<?php echo $this->get_field_id('teamlinkurl2'); ?>"><?php _e('2. Link (URL):','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('teamlinkurl2'); ?>" value="<?php echo $teamlinkurl2; ?>" class="widefat" id="<?php echo $this->get_field_id('teamlinkurl2'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('teamlinkurl2'); ?>" value="<?php echo esc_url($teamlinkurl2); ?>" class="widefat" id="<?php echo $this->get_field_id('teamlinkurl2'); ?>" placeholder="https://..., mailto:... oder tel:..." />
+				</p>
+                 <p>
+				        <label for="<?php echo $this->get_field_id('teamlink_aria2'); ?>"><?php _e('2. Link (Aria-Label):','dorayaki'); ?></label>
+					    <input type="text" name="<?php echo $this->get_field_name('teamlink_aria2'); ?>" value="<?php echo esc_attr($teamlink_aria2); ?>" class="widefat" id="<?php echo $this->get_field_id('teamlink_aria2'); ?>" placeholder="e.g. Twitter Account of John Doe" />
 				</p>
 
 
