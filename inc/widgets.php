@@ -1406,8 +1406,18 @@ class dorayaki_contactbox extends WP_Widget {
 	}
 
 	public function widget($args, $instance) {
-		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 'cbaddress' => '', 'cbinfo' => '', 'cbemailtitle01' => '', 'cbemail01' => '', 'cbemailtitle02' => '', 'cbemail02' => '', 'cbemailtitle03' => '', 'cbemail03' => '', 'cbmapurl' => '' ) );
-		extract( $args );
+		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 
+			'cbaddress' => '', 
+			'cbinfo' => '', 
+			'cbemailtitle01' => '', 
+			'cbemail01' => '', 
+			'cbemailtitle02' => '',
+			'cbemail02' => '', 
+			'cbemailtitle03' => '',
+			'cbemail03' => '', 
+			'cbmapurl' => '' 
+		) );
+		
 		$cbaddress = $instance['cbaddress'];
 		$cbinfo = $instance['cbinfo'];
 		$cbemailtitle01 = $instance['cbemailtitle01'];
@@ -1418,106 +1428,126 @@ class dorayaki_contactbox extends WP_Widget {
 		$cbemail03 = $instance['cbemail03'];
 		$cbmapurl = $instance['cbmapurl'];
 
-		echo $before_widget; ?>
+		echo $args['before_widget']; ?>
 
 			<div class="contact-box clearfix">
 				<div class="cb-map">
 					<?php if($cbmapurl != ''){
-						echo '<iframe src="'.$cbmapurl.'&amp;output=embed" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>';
+						echo '<iframe src="'.esc_url($cbmapurl).'&amp;output=embed" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>';
 					} ?>
 				</div><!-- end .cb-map -->
 				<div class="cb-info clearfix">
 					<div class="cb-address-wrap">
-						<div class="cb-address"><?php echo wpautop($cbaddress); ?></div>
+						<div class="cb-address"><?php echo wpautop(wp_kses_post($cbaddress)); ?></div>
 						<?php if($cbinfo != ''){
-							echo '<div class="cb-additional">'.$cbinfo.'</div>';
+							echo '<div class="cb-additional">'.wp_kses_post($cbinfo).'</div>';
 						} ?>
 						<?php if($cbmapurl != ''){
-							echo '<a href="'.$cbmapurl.'" class="cb-maplink" target="_blank">'. __( 'View map in browser', 'dorayaki').'</a>';
+							echo '<a href="'.esc_url($cbmapurl).'" class="cb-maplink" target="_blank">'. __( 'View map in browser', 'dorayaki').'</a>';
 						} ?>
 					</div><!-- end .cb-address-wrap -->
 					<div class="cb-emails">
 						<h5><?php _e('Email Us', 'dorayaki') ?></h5>
-						<h6><?php echo ($cbemailtitle01); ?></h6>
-						<span><?php echo ($cbemail01); ?></span>
+						<h6><?php echo esc_html($cbemailtitle01); ?></h6>
+						<span><?php echo esc_html($cbemail01); ?></span>
 						<?php if($cbemailtitle02 != '' || $cbemail02 != ''){
-							echo '<h6>'.$cbemailtitle02.'</h6><span>'.$cbemail02.'</span>';
+							echo '<h6>'.esc_html($cbemailtitle02).'</h6><span>'.esc_html($cbemail02).'</span>';
 						} ?>
 						<?php if($cbemailtitle03 != '' || $cbemail03 != ''){
-							echo '<h6>'.$cbemailtitle03.'</h6><span>'.$cbemail03.'</span>';
+							echo '<h6>'.esc_html($cbemailtitle03).'</h6><span>'.esc_html($cbemail03).'</span>';
 						} ?>
 					</div><!-- end .cb-emails -->
 				</div><!-- end .cb-info -->
 			</div><!-- end .contact-box -->
 
 		 <?php
-		 echo $after_widget;
+		 
+		echo $args['after_widget'];
 
-		 // Reset the post globals as this query will have stomped on it
-		 wp_reset_postdata();
 	 }
 
-	 function update($new_instance, $old_instance) {
-			 return $new_instance;
+	 public function update($new_instance, $old_instance) {
+	    $instance = $old_instance;
+		$instance['cbaddress']      = sanitize_textarea_field($new_instance['cbaddress']);
+		$instance['cbinfo']         = sanitize_textarea_field($new_instance['cbinfo']);
+		$instance['cbemailtitle01'] = sanitize_text_field($new_instance['cbemailtitle01']);
+		$instance['cbemail01']      = sanitize_text_field($new_instance['cbemail01']);
+		$instance['cbemailtitle02'] = sanitize_text_field($new_instance['cbemailtitle02']);
+		$instance['cbemail02']      = sanitize_text_field($new_instance['cbemail02']);
+		$instance['cbemailtitle03'] = sanitize_text_field($new_instance['cbemailtitle03']);
+		$instance['cbemail03']      = sanitize_text_field($new_instance['cbemail03']);
+		$instance['cbmapurl']       = esc_url_raw($new_instance['cbmapurl']);
+		return $instance;
 	 }
 
-	 function form($instance) {
-		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 'cbaddress' => '', 'cbinfo' => '', 'cbemailtitle01' => '', 'cbemail01' => '', 'cbemailtitle02' => '', 'cbemail02' => '', 'cbemailtitle03' => '', 'cbemail03' => '', 'cbmapurl' => '' ) );
-		$cbaddress = esc_attr($instance['cbaddress']);
-		$cbinfo = esc_attr($instance['cbinfo']);
-		$cbemailtitle01 = esc_attr($instance['cbemailtitle01']);
-		$cbemail01 = esc_attr($instance['cbemail01']);
-		$cbemailtitle02 = esc_attr($instance['cbemailtitle02']);
-		$cbemail02 = esc_attr($instance['cbemail02']);
-		$cbemailtitle03 = esc_attr($instance['cbemailtitle03']);
-		$cbemail03 = esc_attr($instance['cbemail03']);
-		$cbmapurl = esc_attr($instance['cbmapurl']);
+	 public function form($instance) {
+		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 
+			'cbaddress' => '', 
+			'cbinfo' => '', 
+			'cbemailtitle01' => '',
+			'cbemail01' => '', 
+			'cbemailtitle02' => '',
+			'cbemail02' => '',
+			'cbemailtitle03' => '', 
+			'cbemail03' => '', 
+			'cbmapurl' => '' 
+		) );
+		 
+		$cbaddress = $instance['cbaddress'];
+		$cbinfo = $instance['cbinfo'];
+		$cbemailtitle01 = $instance['cbemailtitle01'];
+		$cbemail01 = $instance['cbemail01'];
+		$cbemailtitle02 = $instance['cbemailtitle02'];
+		$cbemail02 = $instance['cbemail02'];
+		$cbemailtitle03 = $instance['cbemailtitle03'];
+		$cbemail03 = $instance['cbemail03'];
+		$cbmapurl = $instance['cbmapurl'];
 
 		?>
 
 		<p>
 					<label for="<?php echo $this->get_field_id('cbaddress'); ?>"><?php _e('Company Address:','dorayaki'); ?></label>
-			<textarea name="<?php echo $this->get_field_name('cbaddress'); ?>" class="widefat" rows="5" id="<?php echo $this->get_field_id('cbaddress'); ?>"><?php echo ($cbaddress); ?></textarea>
+			<textarea name="<?php echo $this->get_field_name('cbaddress'); ?>" class="widefat" rows="5" id="<?php echo $this->get_field_id('cbaddress'); ?>"><?php echo esc_textarea($cbaddress); ?></textarea>
 				</p>
 
 				<p>
 					<label for="<?php echo $this->get_field_id('cbinfo'); ?>"><?php _e('Additional Info (e.g. Phone Numbers):','dorayaki'); ?></label>
-			<textarea name="<?php echo $this->get_field_name('cbinfo'); ?>" class="widefat" rows="2" id="<?php echo $this->get_field_id('cbinfo'); ?>"><?php echo($cbinfo); ?></textarea>
+			<textarea name="<?php echo $this->get_field_name('cbinfo'); ?>" class="widefat" rows="2" id="<?php echo $this->get_field_id('cbinfo'); ?>"><?php echo esc_textarea($cbinfo); ?></textarea>
 				</p>
 
 				<p>
 						<label for="<?php echo $this->get_field_id('cbemailtitle01'); ?>"><?php _e('1. Email Address Title:','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('cbemailtitle01'); ?>" value="<?php echo $cbemailtitle01; ?>" class="widefat" id="<?php echo $this->get_field_id('cbemailtitle01'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('cbemailtitle01'); ?>" value="<?php echo esc_attr($cbemailtitle01); ?>" class="widefat" id="<?php echo $this->get_field_id('cbemailtitle01'); ?>" />
 				</p>
 
 				 <p>
 						<label for="<?php echo $this->get_field_id('cbemail01'); ?>"><?php _e('1. Email Address:','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('cbemail01'); ?>" value="<?php echo $cbemail01; ?>" class="widefat" id="<?php echo $this->get_field_id('cbemail01'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('cbemail01'); ?>" value="<?php echo esc_attr($cbemail01); ?>" class="widefat" id="<?php echo $this->get_field_id('cbemail01'); ?>" />
 				</p>
 
 				<p>
 						<label for="<?php echo $this->get_field_id('cbemailtitle02'); ?>"><?php _e('2. Email Address Title:','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('cbemailtitle02'); ?>" value="<?php echo $cbemailtitle02; ?>" class="widefat" id="<?php echo $this->get_field_id('cbemailtitle02'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('cbemailtitle02'); ?>" value="<?php echo esc_attr($cbemailtitle02); ?>" class="widefat" id="<?php echo $this->get_field_id('cbemailtitle02'); ?>" />
 				</p>
 
 				 <p>
 						<label for="<?php echo $this->get_field_id('cbemail02'); ?>"><?php _e('2. Email Address:','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('cbemail02'); ?>" value="<?php echo $cbemail02; ?>" class="widefat" id="<?php echo $this->get_field_id('cbemail02'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('cbemail02'); ?>" value="<?php echo esc_attr($cbemail02); ?>" class="widefat" id="<?php echo $this->get_field_id('cbemail02'); ?>" />
 				</p>
 
 				<p>
 						<label for="<?php echo $this->get_field_id('cbemailtitle03'); ?>"><?php _e('3. Email Address Title:','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('cbemailtitle03'); ?>" value="<?php echo $cbemailtitle03; ?>" class="widefat" id="<?php echo $this->get_field_id('cbemailtitle03'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('cbemailtitle03'); ?>" value="<?php echo esc_attr($cbemailtitle03); ?>" class="widefat" id="<?php echo $this->get_field_id('cbemailtitle03'); ?>" />
 				</p>
 
 				 <p>
 						<label for="<?php echo $this->get_field_id('cbemail03'); ?>"><?php _e('3. Email Address:','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('cbemail03'); ?>" value="<?php echo $cbemail03; ?>" class="widefat" id="<?php echo $this->get_field_id('cbemail03'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('cbemail03'); ?>" value="<?php echo esc_attr($cbemail03); ?>" class="widefat" id="<?php echo $this->get_field_id('cbemail03'); ?>" />
 				</p>
 
 				<p>
 					<label for="<?php echo $this->get_field_id('cbmapurl'); ?>"><?php _e('Google Maps URL (no short URL, please):','dorayaki'); ?></label>
-			<textarea name="<?php echo $this->get_field_name('cbmapurl'); ?>" class="widefat" rows="8" id="<?php echo $this->get_field_id('cbmapurl'); ?>"><?php echo($cbmapurl); ?></textarea>
+			<textarea name="<?php echo $this->get_field_name('cbmapurl'); ?>" class="widefat" rows="8" id="<?php echo $this->get_field_id('cbmapurl'); ?>"><?php echo esc_url($cbmapurl); ?></textarea>
 				</p>
 
 		<?php
