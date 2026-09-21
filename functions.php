@@ -277,6 +277,22 @@ function dorayaki_scripts() {
 add_action( 'wp_enqueue_scripts', 'dorayaki_scripts' );
 
 /*-----------------------------------------------------------------------------------*/
+/*  Assets Enqueue scripts and styles
+/*-----------------------------------------------------------------------------------*/
+function dorayaki_enqueue_widget_assets() {
+    // Test if Widget dorayaki_contactbox is active.
+    if ( is_active_widget( false, false, 'dorayaki_contactbox_2_click', true ) ) {
+        
+        // Loads map-privacy stylesheet.
+        wp_enqueue_style( 'dorayaki-map-privacy', get_template_directory_uri() . '/assets/css/map-privacy.css', array(), '1.0.0' );
+
+        // Adds JavaScript map-privacy button.
+        wp_enqueue_script( 'dorayaki-map-privacy', get_template_directory_uri() . '/assets/js/map-privacy.js', array(), '1.0.0', true );
+    }
+}
+add_action( 'wp_enqueue_scripts', 'dorayaki_enqueue_widget_assets' );
+	
+/*-----------------------------------------------------------------------------------*/
 /* Load block editor styles.
 /*-----------------------------------------------------------------------------------*/
 function dorayaki_block_editor_styles() {
