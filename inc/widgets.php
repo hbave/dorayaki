@@ -1246,58 +1246,60 @@ class dorayaki_service extends WP_Widget {
 	}
 
 	public function widget($args, $instance) {
-		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 'servicename' => '', 'serviceimg' => '', 'serviceinfo' => '', 'servicelink' => '' ) );
-		extract( $args );
+		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 'servicename' => '', 'serviceimg' => '', 'serviceinfo' => '', 'servicelink' => '' ) );		
 		$servicename = $instance['servicename'];
 		$serviceimg = $instance['serviceimg'];
 		$serviceinfo = $instance['serviceinfo'];
 		$servicelink = $instance['servicelink'];
 
-		echo $before_widget; ?>
+		echo $args['before_widget']; ?>
 
-			<a class="service-box" href="<?php echo $servicelink; ?>">
-				<img src="<?php echo $serviceimg; ?>" alt="<?php echo $servicename; ?>" class="service-img">
-				<span class="service-name"><?php echo $servicename; ?></span>
-				<span class="service-info"><?php echo $serviceinfo; ?></span>
+			<a class="service-box" href="<?php echo esc_url($servicelink); ?>">
+				<img src="<?php echo esc_url($serviceimg); ?>" alt="<?php echo esc_attr($servicename); ?>" class="service-img">
+				<span class="service-name"><?php echo esc_html($servicename); ?></span>
+				<span class="service-info"><?php echo wp_kses_post($serviceinfo); ?></span>
 			</a><!-- end .service-box -->
 
 		 <?php
-		 echo $after_widget;
+		 echo $args['after_widget'];
 
-		 // Reset the post globals as this query will have stomped on it
-		 wp_reset_postdata();
 	 }
 
-	 function update($new_instance, $old_instance) {
-			 return $new_instance;
+	 public function update($new_instance, $old_instance) {
+		$instance = $old_instance;
+		$instance['servicename'] = sanitize_text_field($new_instance['servicename']);
+		$instance['serviceimg']  = esc_url_raw($new_instance['serviceimg']);
+		$instance['serviceinfo'] = sanitize_textarea_field($new_instance['serviceinfo']);
+		$instance['servicelink'] = esc_url_raw($new_instance['servicelink']);
+		return $instance;
 	 }
 
-	 function form($instance) {
-		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 'servicename' => '', 'serviceimg' => '', 'serviceinfo' => '', 'servicelink' => '' ) );
-		$servicename = esc_attr($instance['servicename']);
-		$serviceimg = esc_attr($instance['serviceimg']);
-		$serviceinfo = esc_attr($instance['serviceinfo']);
-		$servicelink = esc_attr($instance['servicelink']);
+	 public function form($instance) {
+		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 'servicename' => '', 'serviceimg' => '', 'serviceinfo' => '', 'servicelink' => '' ) );		 
+		$servicename = $instance['servicename'];
+		$serviceimg = $instance['serviceimg'];
+		$serviceinfo = $instance['serviceinfo'];
+		$servicelink = $instance['servicelink'];
 		?>
 
 		<p>
 						<label for="<?php echo $this->get_field_id('servicename'); ?>"><?php _e('Service Title:','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('servicename'); ?>" value="<?php echo $servicename; ?>" class="widefat" id="<?php echo $this->get_field_id('servicename'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('servicename'); ?>" value="<?php echo esc_attr($servicename); ?>" class="widefat" id="<?php echo $this->get_field_id('servicename'); ?>" />
 				</p>
 
 				<p>
 						<label for="<?php echo $this->get_field_id('serviceimg'); ?>"><?php _e('Image URL (380px width / flexible height):','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('serviceimg'); ?>" value="<?php echo $serviceimg; ?>" class="widefat" id="<?php echo $this->get_field_id('serviceimg'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('serviceimg'); ?>" value="<?php echo esc_url($serviceimg); ?>" class="widefat" id="<?php echo $this->get_field_id('serviceimg'); ?>" />
 				</p>
 
 				 <p>
 					<label for="<?php echo $this->get_field_id('serviceinfo'); ?>"><?php _e('Service Info Text:','dorayaki'); ?></label>
-			<textarea name="<?php echo $this->get_field_name('serviceinfo'); ?>" class="widefat" rows="4" id="<?php echo $this->get_field_id('serviceinfo'); ?>"><?php echo( $serviceinfo ); ?></textarea>
+			<textarea name="<?php echo $this->get_field_name('serviceinfo'); ?>" class="widefat" rows="4" id="<?php echo $this->get_field_id('serviceinfo'); ?>"><?php echo esc_textarea($serviceinfo); ?></textarea>
 				</p>
 
 				<p>
 						<label for="<?php echo $this->get_field_id('servicelink'); ?>"><?php _e('URL the Service Box will link to:','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('servicelink'); ?>" value="<?php echo $servicelink; ?>" class="widefat" id="<?php echo $this->get_field_id('servicelink'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('servicelink'); ?>" value="<?php echo esc_url($servicelink); ?>" class="widefat" id="<?php echo $this->get_field_id('servicelink'); ?>" />
 				</p>
 
 
