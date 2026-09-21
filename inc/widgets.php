@@ -1326,20 +1326,20 @@ class dorayaki_portfolio extends WP_Widget {
 
 	public function widget($args, $instance) {
 		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 'portfolionumber' => '', 'portfoliocat' => '' ) );
-		extract( $args );
-		$portfolionumber = $instance['portfolionumber'];
-		$portfoliocat = apply_filters('widget_title', $instance['portfoliocat']);
+		
+		$portfolionumber = ! empty( $instance['portfolionumber'] ) ? absint( $instance['portfolionumber'] ) : 4;
+		$portfoliocat    = $instance['portfoliocat'];
 
-		echo $before_widget; ?>
+		echo $args['before_widget']; ?>
 
 				<?php
 				global $post;
-				$dorayaki_post = $post;
-
+		        $portfolioposts = array();
+		        if ( ! empty( $portfoliocat ) ) {
 				// get the category IDs and the number of posts and place them in an array
-				$args = array(
+				$query_args = array(
 					'posts_per_page' => $portfolionumber,
-					'category_name' => $portfoliocat,
+					's'              => $portfoliocat,
 					'tax_query' => array(
 						array(
 							'taxonomy' => 'post_format',
@@ -1349,45 +1349,49 @@ class dorayaki_portfolio extends WP_Widget {
 							)
 							)
 					);
-
-				$portfolioposts = get_posts( $args );
-				foreach( $portfolioposts as $post ) : setup_postdata($post); ?>
-
-					<div class="portfolio-box">
-						<?php if(has_post_thumbnail() ) { ?>
-							<a href="<?php the_permalink(); ?>" class="portfolio-thumb"><?php the_post_thumbnail();?></a>
-						<?php } ?>
-						<h3 class="portfolio-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-						<div class="portfolio-entry-cats"><?php the_category(' &sdot; '); ?></div>
-					</div><!-- end .portfolio-box -->
-					<?php endforeach; ?>
-					<?php $post = $dorayaki_post; ?>
+					
+					$portfolioposts = get_posts( $query_args );
+				}
+		        if ( ! empty( $portfolioposts ) ) :
+					foreach( $portfolioposts as $post ) : setup_postdata($post); ?>
+						<div class="portfolio-box">
+							<?php if(has_post_thumbnail() ) { ?>
+								<a href="<?php the_permalink(); ?>" class="portfolio-thumb"><?php the_post_thumbnail();?></a>
+							<?php } ?>
+							<h3 class="portfolio-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+							<div class="portfolio-entry-cats"><?php the_category(' &sdot; '); ?></div>
+						</div><!-- end .portfolio-box -->
+					<?php endforeach;
+					wp_reset_postdata();
+				endif;
+				?>
 		 <?php
-		 echo $after_widget;
-
-		 // Reset the post globals as this query will have stomped on it
-		 wp_reset_postdata();
+		 echo $args['after_widget'];
 
 	 }
 
-	 function update($new_instance, $old_instance) {
-			 return $new_instance;
+	 public function update($new_instance, $old_instance) {
+	    $instance = $old_instance;
+		$instance['portfolionumber'] = absint($new_instance['portfolionumber']);
+		$instance['portfoliocat']    = sanitize_text_field($new_instance['portfoliocat']); // KORREKTUR: Daten-Sanitizing hinzugefügt
+		return $instance;
 	 }
 
-	 function form($instance) {
+	 public function form($instance) {
 		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 'portfolionumber' => '', 'portfoliocat' => '' ) );
-			 $portfolionumber = esc_attr($instance['portfolionumber']);
-		$portfoliocat = esc_attr($instance['portfoliocat']);
+		 
+		 $portfolionumber = $instance['portfolionumber'];
+		 $portfoliocat = $instance['portfoliocat'];
 		?>
 
 		 <p>
 						<label for="<?php echo $this->get_field_id('portfolionumber'); ?>"><?php _e('Number of portfolio posts to display (e.g. 4, 6 or 8):','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('portfolionumber'); ?>" value="<?php echo $portfolionumber; ?>" class="widefat" id="<?php echo $this->get_field_id('portfolionumber'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('portfolionumber'); ?>" value="<?php echo esc_attr($portfolionumber); ?>" class="widefat" id="<?php echo $this->get_field_id('portfolionumber'); ?>" />
 				</p>
 
 				<p>
 						<label for="<?php echo $this->get_field_id('portfoliocat'); ?>"><?php _e('Category slug (NOT name) of your portfolio category:','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('portfoliocat'); ?>" value="<?php echo $portfoliocat; ?>" class="widefat" id="<?php echo $this->get_field_id('portfoliocat'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('portfoliocat'); ?>" value="<?php echo esc_attr($portfoliocat); ?>" class="widefat" id="<?php echo $this->get_field_id('portfoliocat'); ?>" />
 				</p>
 
 		<?php
