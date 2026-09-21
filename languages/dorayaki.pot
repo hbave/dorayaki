@@ -1165,3 +1165,35 @@ msgstr ""
 
 msgid " Product Key Activation"
 msgstr ""
+
+inc/widgets.php:544
+msgid "Contact Box 2 Click for Pages"
+msgstr ""
+
+inc/widgets.php:546
+msgid "Contact box with privacy-friendly 2-click map loading for multiple providers."
+msgstr ""
+
+inc/widgets.php:554
+msgid "Load %s?"
+msgstr ""
+
+inc/widgets.php:555
+msgid "By loading the map, you accept the privacy policy of %s."
+msgstr ""
+
+inc/widgets.php:557
+msgid "Activate Map"
+msgstr ""
+
+inc/widgets.php:560
+msgid "Interactive Map of %s"
+msgstr ""
+
+inc/widgets.php:563
+msgid "Map Provider"
+msgstr ""
+
+inc/widgets.php:684
+msgid "Map URL (Google, OSM, Mapbox or alternative):"
+msgstr ""
