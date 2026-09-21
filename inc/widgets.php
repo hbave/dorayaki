@@ -1339,7 +1339,6 @@ class dorayaki_portfolio extends WP_Widget {
 				// get the category IDs and the number of posts and place them in an array
 				$query_args = array(
 					'posts_per_page' => $portfolionumber,
-					's'              => $portfoliocat,
 					'tax_query' => array(
 						array(
 							'taxonomy' => 'post_format',
@@ -1349,6 +1348,11 @@ class dorayaki_portfolio extends WP_Widget {
 							)
 							)
 					);
+					if ( preg_match('/^[0-9, ]+$/', $portfoliocat) ) {
+						$query_args['cat'] = str_replace(' ', '', $portfoliocat);
+					} else {
+						$query_args['category_name'] = sanitize_text_field( str_replace(' ', '', $portfoliocat) );
+					}
 					
 					$portfolioposts = get_posts( $query_args );
 				}
