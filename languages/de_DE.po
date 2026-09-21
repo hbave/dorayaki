@@ -1232,3 +1232,36 @@ msgstr "-Aktivierung"
 
 msgid " Product Key Activation"
 msgstr "-Produktschlüssel-Aktivierung"
+
+#: inc/widgets.php:544
+msgid "Contact Box 2 Click for Pages"
+msgstr "Kontakt-Box (2-Click) für Seiten"
+
+#: inc/widgets.php:546
+msgid "Contact box with privacy-friendly 2-click map loading for multiple providers."
+msgstr "Kontaktbox mit datenschutzfreundlichem 2-Click-Nachladen von Karten für mehrere Anbieter."
+
+#: inc/widgets.php:554
+msgid "Load %s?"
+msgstr "%s laden?"
+
+#: inc/widgets.php:555
+msgid "By loading the map, you accept the privacy policy of %s."
+msgstr "Mit dem Laden der Karte akzeptieren Sie die Datenschutzbestimmungen von %s."
+
+#: inc/widgets.php:557
+msgid "Activate Map"
+msgstr "Karte aktivieren"
+
+#: inc/widgets.php:560
+msgid "Interactive Map of %s"
+msgstr "Interaktive Karte von %s"
+
+#: inc/widgets.php:563
+msgid "Map Provider"
+msgstr "Kartenanbieter"
+
+#: inc/widgets.php:684
+msgid "Map URL (Google, OSM, Mapbox or alternative):"
+msgstr "Karten-URL (Google, OSM, Mapbox oder Alternative):"
+
