@@ -1597,11 +1597,11 @@ class dorayaki_contactbox_2_click extends WP_Widget {
 			<div class="contact-box clearfix">
 				<div class="cb-map">
 					<?php if($cbmapurl != ''){
-						if (strpos($cbmapurl, 'google') !== false) || strpos($cbmapurl, 'maps.google') !== false) {
+						if (strpos($cbmapurl, 'google') !== false || strpos($cbmapurl, 'maps.google') !== false) {
 							$provider_name = 'Google Maps';
 						} elseif (strpos($cbmapurl, 'mapbox') !== false) {
 							$provider_name = 'Mapbox';
-						} elseif (strpos($cbmapurl, 'openstreetmap') !== false {
+						} elseif (strpos($cbmapurl, 'openstreetmap') !== false) {
 							$provider_name = 'OpenStreetMap';
 						} else {
 							// Fallback für alle anderen/unbekannten Kartenlinks
