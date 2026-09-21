@@ -1765,5 +1765,6 @@ function dorayaki_register_widgets() {
 	register_widget( 'dorayaki_service' );
 	register_widget( 'dorayaki_portfolio' );
 	register_widget( 'dorayaki_contactbox' );
+	register_widget( 'dorayaki_contactbox_2_click' );
 }
 add_action( 'widgets_init', 'dorayaki_register_widgets' );
