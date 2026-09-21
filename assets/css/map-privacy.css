@@ -21,16 +21,35 @@
 }
 
 /* ==========================================================================
-   1. Core Layout Container
+   1. Theme Anchor & Core Layout Container
    ========================================================================== */
 
-.map-2click-container { 
-    position: relative; 
-    width: 100%; 
+/* Restores the layout anchoring required by the Dorayaki theme grid */
+.widget_dorayaki_contactbox_2_click .cb-map {
+    position: relative !important;
     min-height: 500px;
+    height: 100%;
+    width: 100%;
+    display: block;
+}
+
+/* Forces the new privacy container to fit perfectly inside the theme anchor */
+.map-2click-container { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
     background-color: var(--map-bg-color); 
     border: 1px solid var(--map-border-color); 
     overflow: hidden; 
+}
+
+/* Responsive adjustment for mobile devices */
+@media (max-width: 767px) {
+    .widget_dorayaki_contactbox_2_click .cb-map {
+        min-height: 350px;
+    }
 }
 
 /* ==========================================================================
