@@ -1035,66 +1035,69 @@ class dorayaki_team_small extends WP_Widget {
 
 	public function widget($args, $instance) {
 		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 'teamnameSmall' => '', 'teamimgSmall' => '', 'teampositionSmall' => '', 'teamquoteSmall' => '' ) );
-		extract( $args );
+		
 		$teamnameSmall = $instance['teamnameSmall'];
 		$teamimgSmall = $instance['teamimgSmall'];
 		$teampositionSmall = $instance['teampositionSmall'];
 		$teamquoteSmall = $instance['teamquoteSmall'];
 
-		echo $before_widget; ?>
+		echo $args['before_widget']; ?>
 
 			<div class="team-box-small">
 				<div class="tm-info">
-					<img src="<?php echo $teamimgSmall; ?>" alt="<?php echo $teamnameSmall; ?>" class="tm-img">
+					<img src="<?php echo esc_url($teamimgSmall); ?>" alt="<?php echo esc_attr($teamnameSmall); ?>" class="tm-img">
 					<div class="tm-author">
-						<h4><?php echo $teamnameSmall; ?></h4>
-						<span class="tms-pos"><?php echo $teampositionSmall; ?></span>
+						<h4><?php echo esc_html($teamnameSmall); ?></h4>
+						<span class="tms-pos"><?php echo esc_html($teampositionSmall); ?></span>
 					</div>
 				</div><!-- end .tm-info -->
 				<div class="tm-quote">
-					<p><?php echo $teamquoteSmall; ?></p>
+					<?php echo wpautop(wp_kses_post($teamquoteSmall)); ?>
 				</div><!-- end .tm-quote -->
 			</div><!-- end .team-box-small -->
 
 		 <?php
-		 echo $after_widget;
+		 echo $args['after_widget'];
 
-		 // Reset the post globals as this query will have stomped on it
-		 wp_reset_postdata();
 	 }
 
-	 function update($new_instance, $old_instance) {
-			 return $new_instance;
+	 public function update($new_instance, $old_instance) {
+		$instance = $old_instance;
+		$instance['teamnameSmall']     = sanitize_text_field($new_instance['teamnameSmall']);
+		$instance['teamimgSmall']      = esc_url_raw($new_instance['teamimgSmall']);
+		$instance['teampositionSmall'] = sanitize_text_field($new_instance['teampositionSmall']);
+		$instance['teamquoteSmall']    = sanitize_textarea_field($new_instance['teamquoteSmall']);
+		return $instance;
 	 }
 
-	 function form($instance) {
+	 public function form($instance) {
 		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 'teamnameSmall' => '', 'teamimgSmall' => '', 'teampositionSmall' => '', 'teamquoteSmall' => '' ) );
-		$teamnameSmall = esc_attr($instance['teamnameSmall']);
-		$teamimgSmall = esc_attr($instance['teamimgSmall']);
-		$teampositionSmall = esc_attr($instance['teampositionSmall']);
-		$teamquoteSmall = esc_attr($instance['teamquoteSmall']);
+		$teamnameSmall = $instance['teamnameSmall'];
+		$teamimgSmall = $instance['teamimgSmall'];
+		$teampositionSmall = $instance['teampositionSmall'];
+		$teamquoteSmall = $instance['teamquoteSmall'];
 
 
 		?>
 
 		<p>
 						<label for="<?php echo $this->get_field_id('teamnameSmall'); ?>"><?php _e('Team Member Name:','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('teamnameSmall'); ?>" value="<?php echo $teamnameSmall; ?>" class="widefat" id="<?php echo $this->get_field_id('teamnameSmall'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('teamnameSmall'); ?>" value="<?php echo esc_attr($teamnameSmall); ?>" class="widefat" id="<?php echo $this->get_field_id('teamnameSmall'); ?>" />
 				</p>
 
 				<p>
 						<label for="<?php echo $this->get_field_id('teamimgSmall'); ?>"><?php _e('Image URL (240x240px):','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('teamimgSmall'); ?>" value="<?php echo $teamimgSmall; ?>" class="widefat" id="<?php echo $this->get_field_id('teamimgSmall'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('teamimgSmall'); ?>" value="<?php echo esc_url($teamimgSmall); ?>" class="widefat" id="<?php echo $this->get_field_id('teamimgSmall'); ?>" />
 				</p>
 
 				<p>
 						<label for="<?php echo $this->get_field_id('teampositionSmall'); ?>"><?php _e('Company Position:','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('teampositionSmall'); ?>" value="<?php echo $teampositionSmall; ?>" class="widefat" id="<?php echo $this->get_field_id('teampositionSmall'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('teampositionSmall'); ?>" value="<?php echo esc_attr($teampositionSmall); ?>" class="widefat" id="<?php echo $this->get_field_id('teampositionSmall'); ?>" />
 				</p>
 
 				 <p>
 					<label for="<?php echo $this->get_field_id('teamquoteSmall'); ?>"><?php _e('Personal Quote:','dorayaki'); ?></label>
-			<textarea name="<?php echo $this->get_field_name('teamquoteSmall'); ?>" class="widefat" rows="4" id="<?php echo $this->get_field_id('teamquoteSmall'); ?>"><?php echo( $teamquoteSmall ); ?></textarea>
+			<textarea name="<?php echo $this->get_field_name('teamquoteSmall'); ?>" class="widefat" rows="4" id="<?php echo $this->get_field_id('teamquoteSmall'); ?>"><?php echo  esc_textarea($teamquoteSmall); ?></textarea>
 				</p>
 
 
