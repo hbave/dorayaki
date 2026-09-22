@@ -112,31 +112,31 @@ class dorayaki_headerinfo extends WP_Widget {
 
 	public function widget($args, $instance) {
 		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 'headerinfotop' => '', 'headerinfobottom' => '' ) );
-		extract( $args );
+		
 		$headerinfotop = $instance['headerinfotop'];
 		$headerinfobottom = $instance['headerinfobottom'];
 
-		echo $before_widget; ?>
+		echo $args['before_widget']; ?>
 
 			<ul class="headerinfo-text">
-			<li class="headerinfo-top"><span><?php echo $headerinfotop; ?></span></li>
+			<li class="headerinfo-top"><span><?php echo esc_attr($headerinfotop); ?></span></li>
 			<?php if($headerinfobottom != ''){
-				echo '<li class="headerinfo-bottom"><span>'.$headerinfobottom.'</span></li>';
+				echo '<li class="headerinfo-bottom"><span>'.esc_attr($headerinfobottom).'</span></li>';
 			} ?>
 			</ul><!-- end .headerinfo-text -->
 		 <?php
-		 echo $after_widget;
-
-		 // Reset the post globals as this query will have stomped on it
-		 wp_reset_postdata();
+		 echo $args['after_widget'];
 
 	 }
 
-	 function update($new_instance, $old_instance) {
-			 return $new_instance;
+	 public function update($new_instance, $old_instance) {
+		$instance = $old_instance;
+		$instance['headerinfotop']    = sanitize_text_field( $new_instance['headerinfotop'] );
+		$instance['headerinfobottom'] = sanitize_text_field( $new_instance['headerinfobottom'] );
+		return $instance;
 	 }
 
-	 function form($instance) {
+	 public function form($instance) {
 		/* __php8_keys */ $instance = wp_parse_args( (array) $instance, array( 'headerinfotop' => '', 'headerinfobottom' => '' ) );
 		$headerinfotop = esc_attr($instance['headerinfotop']);
 		$headerinfobottom = esc_attr($instance['headerinfobottom']);
@@ -144,12 +144,12 @@ class dorayaki_headerinfo extends WP_Widget {
 
 		 <p>
 						<label for="<?php echo $this->get_field_id('headerinfotop'); ?>"><?php _e('Header Info Text Top:','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('headerinfotop'); ?>" value="<?php echo $headerinfotop; ?>" class="widefat" id="<?php echo $this->get_field_id('headerinfotop'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('headerinfotop'); ?>" value="<?php echo esc_attr($headerinfotop); ?>" class="widefat" id="<?php echo $this->get_field_id('headerinfotop'); ?>" />
 				</p>
 
 				<p>
 						<label for="<?php echo $this->get_field_id('headerinfobottom'); ?>"><?php _e('Header Info Text Bottom:','dorayaki'); ?></label>
-						<input type="text" name="<?php echo $this->get_field_name('headerinfobottom'); ?>" value="<?php echo $headerinfobottom; ?>" class="widefat" id="<?php echo $this->get_field_id('headerinfobottom'); ?>" />
+						<input type="text" name="<?php echo $this->get_field_name('headerinfobottom'); ?>" value="<?php echo esc_attr($headerinfobottom); ?>" class="widefat" id="<?php echo $this->get_field_id('headerinfobottom'); ?>" />
 				</p>
 
 		<?php
