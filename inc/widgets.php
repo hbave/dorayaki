@@ -1451,7 +1451,7 @@ class dorayaki_contactbox extends WP_Widget {
 					<div class="cb-address-wrap">
 						<div class="cb-address"><?php echo wpautop(wp_kses_post($cbaddress)); ?></div>
 						<?php if($cbinfo != ''){
-							echo '<div class="cb-additional">'.wp_kses_post($cbinfo).'</div>';
+							echo '<div class="cb-additional">'.wpautop(wp_kses_post($cbinfo)).'</div>';
 						} ?>
 						<?php if($cbmapurl != ''){
 							echo '<a href="'.esc_url($cbmapurl).'" class="cb-maplink" target="_blank">'. __( 'View map in browser', 'dorayaki').'</a>';
@@ -1640,7 +1640,7 @@ class dorayaki_contactbox_2_click extends WP_Widget {
 					<div class="cb-address-wrap">
 						<div class="cb-address"><?php echo wpautop(wp_kses_post($cbaddress)); ?></div>
 						<?php if($cbinfo != ''){
-							echo '<div class="cb-additional">'.wp_kses_post($cbinfo).'</div>';
+							echo '<div class="cb-additional">'.wpautop(wp_kses_post($cbinfo)).'</div>';
 						} ?>
 						<?php if($cbmapurl != ''){
 							echo '<a href="'.esc_url($cbmapurl).'" class="cb-maplink" target="_blank">'. __( 'View map in browser', 'dorayaki').'</a>';
